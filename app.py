@@ -8,8 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service as ChromeService
 from time import sleep
 from selenium.webdriver.support import expected_conditions as condicao_esperada
-
-# Iniciar o webdriver
+from pathlib import Path
 
 
 def iniciar_driver():
@@ -42,7 +41,11 @@ def iniciar_driver():
     )
     return driver, wait
 
-df = pd.read_excel('/home/xmarkhus/Documentos/PROJETOS_PYTHON/Automacao_WEB/produtos.xlsx')
+script_dir = Path(__file__).resolve().parent
+nome_arquivo = 'produtos.xlsx'
+arquivo = script_dir/nome_arquivo
+
+df = pd.read_excel(arquivo)
 
 driver, wait = iniciar_driver()
 driver.get('https://cadastroprodutos-devaprender.netlify.app/')
@@ -51,7 +54,7 @@ for index, row in df.iterrows():
     produto = row['Produto']
     fornecedor = row['Fornecedor']
     categoria = row['Categoria']
-    valor_unitario = row['Valor Unitário']    
+    valor_unitario = row['Valor Unitário']
     
     campo_produto = wait.until(condicao_esperada.element_to_be_clickable((By.XPATH, "//input[@id='campo1']")))
     campo_produto.send_keys(produto)
